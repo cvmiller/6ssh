@@ -46,6 +46,8 @@ Bash is terrible at string handling, why write this script in bash? Because I wa
 ## Dependencies
 The script is dependent on `bash`, `ip`, and `grep`, both of which should be readily available on any linux distro.
 
+BSD support (as of v0.9.2) requires **[ip command emulator](https://raw.githubusercontent.com/cvmiller/v6disc/master/ip_em.sh)**, download and place in same directory as `6ssh.sh`.
+
 
 ## Contributors
 

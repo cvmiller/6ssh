@@ -13,6 +13,19 @@
 #	2) support BSD
 
 
+#
+# Source in IP command emulator (uses ifconfig, hense more portable)
+#
+OS=""
+# check OS type
+OS=$(uname -s)
+if [ "$OS" == "Darwin" ] || [ "$OS" == "FreeBSD" ]; then
+	# MacOS X/BSD compatibility
+	source ip_em.sh
+fi
+
+
+
 function usage {
                echo "	$0 - ssh using Stable SLAAC Source Address "
 	       echo "	e.g. $0 <host> "
@@ -23,7 +36,7 @@ function usage {
 	       exit 1
            }
 
-VERSION=0.9.1
+VERSION=0.9.2
 
 # some variables
 
@@ -78,7 +91,7 @@ function get_slaac_addr  {
 	local local_intf="$1"
 	# get IPv6 Stable SLAAC Address
 	slaac_addr=""
-	slaac_addr=$(ip addr show $local_intf | grep -E '(mngtmpaddr|noprefixroute)' |  grep -o -E "$PREFIX$IPV6_REG" | tail -1)	
+	slaac_addr=$(ip addr show $local_intf | grep -E '(mngtmpaddr|noprefixroute|autoconf)' |  grep -o -E "$PREFIX$IPV6_REG" | tail -1)	
 	#if (( DEBUG == 1 )); then echo "DEBUG: slaac_addr: $slaac_addr";fi
 	echo -e "$slaac_addr"
 }
@@ -87,7 +100,7 @@ function get_slaac_addr  {
 slaac_addr=""
 if [ -z "$INTERFACE" ]; then
 	# set up a list of active interfaces
-	INTF_LIST=$(ip link | grep LOWER_UP | grep -v LOOPBACK | cut -d ':' -f 2 | tr '\n' ' ' )
+	INTF_LIST=$(ip link | grep -E '(LOWER_UP|UP,BROADCAST)' | grep -v LOOPBACK | cut -d ':' -f 2 | tr '\n' ' ' )
 	if (( DEBUG == 1 )); then echo "DEBUG:  INTF_LIST:$INTF_LIST";fi
 
 	list_length=$(wc -w <<< "$INTF_LIST")
@@ -113,7 +126,7 @@ if [ -z "$INTERFACE" ]; then
 	fi
 else
 	# User specified interface
-	INTF=$(ip link | grep LOWER_UP | cut -d ':' -f 2 | grep -o " $INTERFACE" )
+	INTF=$(ip link | grep -E '(LOWER_UP|UP,BROADCAST)' | cut -d ':' -f 2 | grep -o " $INTERFACE" )
 	if [ -z "$INTF" ]; then
 		echo "Error: Selected Interface: $INTERFACE is not found or DOWN"
 		usage
