@@ -1,5 +1,17 @@
 #!/usr/bin/env bash
 
+##################################################################################
+#
+#  Copyright (C) 2015-2024 Craig Miller
+#
+#  See the file "LICENSE" for information on usage and redistribution
+#  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
+#  Distributed under GPLv2 License
+#
+##################################################################################
+
+
+
 #
 #	6ssh: a shell program to ssh _from_ stable SLAAC Address
 #
@@ -10,7 +22,7 @@
 
 # todo:
 #	1) allow arbitrary ssh options (e.g. -o AddressFamily=inet6
-#	2) support BSD
+#	BSD Supported - as of v0.9.2 	20 July 2024
 
 
 #
