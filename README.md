@@ -23,6 +23,13 @@ This script merely automates the process of finding which interface has a valid 
 
 The script checks all the interfaces for a Stable SLAAC Address, and uses the first one it finds for the `ssh` session. 
 
+By default, the script will use a Global Unique Address (**GUA**) when selecting a Stable SLAAC Address. But by commenting the following line, the script will use a Stable Unique Local Address (**ULA**).
+
+```
+# Comment out next line, if using ULAs
+PREFIX='2'
+```
+
 ### Help
 
 Like any script there is help. With this first release there is only `-i <interface>` which allows the user to control which interface is used, and `-X` for X11 forwarding. 

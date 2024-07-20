@@ -2,7 +2,7 @@
 
 ##################################################################################
 #
-#  Copyright (C) 2015-2024 Craig Miller
+#  Copyright (C) 2024 Craig Miller
 #
 #  See the file "LICENSE" for information on usage and redistribution
 #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
@@ -48,7 +48,7 @@ function usage {
 	       exit 1
            }
 
-VERSION=0.9.2
+VERSION=0.9.3
 
 # some variables
 
@@ -61,7 +61,6 @@ PREFIX='fd'
 # Comment out next line, if using ULAs
 PREFIX='2'
 
-IPV6_REG='[0-9a-f]{2,3}:([0-9a-f]+:){6}[0-9a-f]+'
 IPV6_REG='[0-9a-f]{2,3}:([0-9a-f]+:){3,6}[:]?[0-9a-f]+'
 INTERFACE=""
 
