@@ -28,7 +28,7 @@
 #
 # Moved self test netstat command within the self test block - 20 July 2024
 		
-VERSION=0.98
+VERSION=0.99
 
 # check OS type
 OS=$(uname -s)
@@ -101,7 +101,7 @@ if [ -n "$1" ]; then
 		fi
 
 		# get self test interface 
-		INTF=$(netstat -i | tail -1 |  awk '{print $1}')
+		INTF=$(netstat -i -n | tail -1 |  awk '{print $1}')
 		
 		echo "Running self test"
 		echo "---- ip addr"
