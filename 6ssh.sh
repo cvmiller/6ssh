@@ -50,7 +50,7 @@ function usage {
 	       exit 1
            }
 
-VERSION=0.9.5
+VERSION=0.9.6
 
 # some variables
 
@@ -114,8 +114,8 @@ function get_slaac_addr  {
 
 slaac_addr=""
 if [ -z "$INTERFACE" ]; then
-	# set up a list of active interfaces
-	INTF_LIST=$(ip link | grep -E '(LOWER_UP|UP,BROADCAST)' | grep -v LOOPBACK | cut -d ':' -f 2 | tr '\n' ' ' )
+	# set up a list of active interfaces (and ignore DORMANT in Linux)
+	INTF_LIST=$(ip link | grep -E '(LOWER_UP|UP,BROADCAST)' | grep -E -v '(LOOPBACK|DORMANT)' | cut -d ':' -f 2 | tr '\n' ' ' )
 	if (( DEBUG == 1 )); then echo "DEBUG:  INTF_LIST:$INTF_LIST";fi
 
 	list_length=$(wc -w <<< "$INTF_LIST")
