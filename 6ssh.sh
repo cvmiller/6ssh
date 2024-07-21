@@ -50,7 +50,7 @@ function usage {
 	       exit 1
            }
 
-VERSION=0.9.4
+VERSION=0.9.5
 
 # some variables
 
@@ -106,7 +106,7 @@ function get_slaac_addr  {
 	local local_intf="$1"
 	# get IPv6 Stable SLAAC Address
 	slaac_addr=""
-	slaac_addr=$(ip addr show $local_intf | grep -E '(mngtmpaddr|noprefixroute|autoconf)' |  grep -o -E "$PREFIX$IPV6_REG" | tail -1)	
+	slaac_addr=$(ip addr show $local_intf | grep -E '(mngtmpaddr|noprefixroute|autoconf)' | grep -v 'temporary' | grep -o -E "$PREFIX$IPV6_REG" | tail -1)	
 	#if (( DEBUG == 1 )); then echo "DEBUG: slaac_addr: $slaac_addr";fi
 	echo -e "$slaac_addr"
 }
