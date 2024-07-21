@@ -22,7 +22,8 @@
 
 # todo:
 #	1) allow arbitrary ssh options (e.g. -o AddressFamily=inet6
-#	BSD Supported - as of v0.9.2 	20 July 2024
+#	BSD Supported - as of v0.9.2 		20 July 2024
+# 	Added option -u for ULAs - v0.9.4	20 July 2024
 
 
 #
@@ -41,14 +42,15 @@ fi
 function usage {
                echo "	$0 - ssh using Stable SLAAC Source Address "
 	       echo "	e.g. $0 <host> "
-	       echo "	-i  use this interface"
+	       echo "	-i <int> use this interface"
+	       echo "	-u  use ULA address (default GUA)"
 	       echo "	-X  use X forwarding"
 	       echo "	"
 	       echo " By Craig Miller - Version: $VERSION"
 	       exit 1
            }
 
-VERSION=0.9.3
+VERSION=0.9.4
 
 # some variables
 
@@ -58,7 +60,7 @@ DEBUG=0
 PREFIX='fd'
 # GUA prefixes start with 2
 #
-# Comment out next line, if using ULAs
+# Comment out next line, if only using ULAs
 PREFIX='2'
 
 IPV6_REG='[0-9a-f]{2,3}:([0-9a-f]+:){3,6}[:]?[0-9a-f]+'
@@ -67,11 +69,13 @@ INTERFACE=""
 SSHOPTS=""
 
 numopts=0
-while getopts "?hdi:XY" options; do
+while getopts "?hdi:uXY" options; do
   case $options in
     i ) INTERFACE=$OPTARG
     	numopts=$(( numopts + 2));;
     d ) DEBUG=1
+    	(( numopts++));;
+    u ) PREFIX='fd'
     	(( numopts++));;
     X ) SSHOPTS="$SSHOPTS -X"
     	(( numopts++));;

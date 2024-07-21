@@ -23,10 +23,10 @@ This script merely automates the process of finding which interface has a valid 
 
 The script checks all the interfaces for a Stable SLAAC Address, and uses the first one it finds for the `ssh` session. 
 
-By default, the script will use a Global Unique Address (**GUA**) when selecting a Stable SLAAC Address. But by commenting the following line, the script will use a Stable Unique Local Address (**ULA**).
+By default, the script will use a Global Unique Address (**GUA**) when selecting a Stable SLAAC Address. Use the `-u` option (as over v0.9.4). Or use ULAs all the time by commenting out the following line in the script:
 
 ```
-# Comment out next line, if using ULAs
+# Comment out next line, if only using ULAs
 PREFIX='2'
 ```
 
@@ -38,7 +38,8 @@ Like any script there is help. With this first release there is only `-i <interf
 $ ./6ssh.sh -h
 	./6ssh.sh - ssh using Stable SLAAC Source Address 
 	e.g. ./6ssh.sh <host> 
-	-i  use this interface
+	-i <int> use this interface
+	-u  use ULA address (default GUA)
 	-X  use X forwarding
 	
 ```
