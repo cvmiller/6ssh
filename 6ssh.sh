@@ -24,6 +24,7 @@
 #	1) allow arbitrary ssh options (e.g. -o AddressFamily=inet6
 #	BSD Supported - as of v0.9.2 		20 July 2024
 # 	Added option -u for ULAs - v0.9.4	20 July 2024
+#	2) fix interface seleciton with eth & wlan connected- cheating with sort for now 23 July 2024
 
 
 #
@@ -50,7 +51,7 @@ function usage {
 	       exit 1
            }
 
-VERSION=0.9.6
+VERSION=0.9.7
 
 # some variables
 
@@ -106,7 +107,7 @@ function get_slaac_addr  {
 	local local_intf="$1"
 	# get IPv6 Stable SLAAC Address
 	slaac_addr=""
-	slaac_addr=$(ip addr show $local_intf | grep -E '(mngtmpaddr|noprefixroute|autoconf)' | grep -v 'temporary' | grep -o -E "$PREFIX$IPV6_REG" | tail -1)	
+	slaac_addr=$(ip addr show dev $local_intf | grep -E '(mngtmpaddr|noprefixroute|autoconf)' | grep -v 'temporary' | grep -o -E "$PREFIX$IPV6_REG" | tail -1)	
 	#if (( DEBUG == 1 )); then echo "DEBUG: slaac_addr: $slaac_addr";fi
 	echo -e "$slaac_addr"
 }
@@ -115,7 +116,8 @@ function get_slaac_addr  {
 slaac_addr=""
 if [ -z "$INTERFACE" ]; then
 	# set up a list of active interfaces (and ignore DORMANT in Linux)
-	INTF_LIST=$(ip link | grep -E '(LOWER_UP|UP,BROADCAST)' | grep -E -v '(LOOPBACK|DORMANT)' | cut -d ':' -f 2 | tr '\n' ' ' )
+	# fixme: select interface based on 'ip -6 route' and pick lowest metric
+	INTF_LIST=$(ip link | grep -E '(LOWER_UP|UP,BROADCAST)' | grep -E -v '(LOOPBACK)' | cut -d ':' -f 2 | sort | tr '\n' ' ' )
 	if (( DEBUG == 1 )); then echo "DEBUG:  INTF_LIST:$INTF_LIST";fi
 
 	list_length=$(wc -w <<< "$INTF_LIST")
