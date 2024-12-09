@@ -26,6 +26,8 @@
 # 	Added option -u for ULAs - v0.9.4	20 July 2024
 #	2) fix interface seleciton with eth & wlan connected- cheating with sort for now 23 July 2024
 
+#	2 Dec 2024 - v1.1 Fixed VLAN ids from interface names
+#	9 Dec 2024 - v1.2 Added "test" option, which displays address and exits
 
 #
 # Source in IP command emulator (uses ifconfig, hense more portable)
@@ -46,16 +48,18 @@ function usage {
 	       echo "	-i <int> use this interface"
 	       echo "	-u  use ULA address (default GUA)"
 	       echo "	-X  use X forwarding"
+		   echo "	-t test, show stable slaac address and quit"
 	       echo "	"
 	       echo " By Craig Miller - Version: $VERSION"
 	       exit 1
            }
 
-VERSION=1.0
+VERSION=1.2
 
 # some variables
 
 DEBUG=0
+TEST=0
 
 # ULA prefixes start with fd
 PREFIX='fd'
@@ -70,11 +74,14 @@ INTERFACE=""
 SSHOPTS=""
 
 numopts=0
-while getopts "?hdi:uXY" options; do
+while getopts "?hdi:uXYt" options; do
   case $options in
     i ) INTERFACE=$OPTARG
     	numopts=$(( numopts + 2));;
     d ) DEBUG=1
+    	(( numopts++));;
+    t ) TEST=1
+		DEBUG=1
     	(( numopts++));;
     u ) PREFIX='fd'
     	(( numopts++));;
@@ -105,6 +112,8 @@ fi
 
 function get_slaac_addr  {
 	local local_intf="$1"
+	# remove any vlan identifier e.g. eth0@if6
+	local_intf=$(echo "$local_intf" | cut -d "@" -f 1)
 	# get IPv6 Stable SLAAC Address
 	slaac_addr=""
 	slaac_addr=$(ip addr show dev $local_intf | grep -E '(mngtmpaddr|noprefixroute|autoconf)' | grep -v 'temporary' | grep -o -E "$PREFIX$IPV6_REG" | tail -1)	
@@ -159,10 +168,13 @@ fi
 if (( DEBUG == 1 )); then echo "DEBUG:  INTF:$INTF	SLAAC ADDR=$slaac_addr";fi
 
 
-
-
 # OK, lets ssh to host using Stable SLAAC Addr as source
-ssh -b $slaac_addr $SSHOPTS "$HOST"
+if [ $TEST -eq 0 ]; then
+	ssh -b $slaac_addr $SSHOPTS "$HOST"
+else 
+	exit 1
+fi
+
 
 echo "6ssh: Pau"
 

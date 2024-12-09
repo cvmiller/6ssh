@@ -41,6 +41,7 @@ $ ./6ssh.sh -h
 	-i <int> use this interface
 	-u  use ULA address (default GUA)
 	-X  use X forwarding
+	-t test, show stable slaac address and quit
 	
 ```
 
